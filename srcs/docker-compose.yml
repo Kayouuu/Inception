@@ -1,16 +1,49 @@
-version: '3'
+version: '3.8'
 
 services:
 
-  mysql:
-    image: mariadb
+  mariadb:
+    build:
+      context: ./requirements/mariadb
+      # dockerfile: Dockerfile # (utilité à voir)
 
     volumes:
+      - ./data/mysql:/var/lib/mysql # dossier_local:dossier_container (les 2 sont liés)
+    
+    env_file:
+      - ./.env
 
-      - ./data/mysql:/var/lib/mysql
-    
-    environment:
-    
+    ports:
+      - "3306"
     restart:  always
 
-  
+  wordpress:
+    build:
+      context: ./requirements/wordpress
+
+    volumes:
+      - ./data/wordpress:/var/www/
+
+    env_file:
+      - ./.env
+
+    ports:
+      - "9000"
+      - "3306"
+    restart:  always
+
+  nginx:
+    build:
+      context: ./requirements/nginx
+
+    env_file:
+      - ./.env
+
+    ports:
+      - "80:443"
+    restart:  always
+    
+networks: # à revoir fortement
+  default:
+    driver: bridge
+

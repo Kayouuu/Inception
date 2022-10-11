@@ -1,15 +1,13 @@
-version: '3.8'
+version: '3.3'
 
 services:
 
   mariadb:
-    build:
-      context: ./requirements/mariadb
-      # dockerfile: Dockerfile # (utilité à voir)
+    build: ./requirements/mariadb
 
     volumes:
-      - ./data/mysql:/var/lib/mysql # dossier_local:dossier_container (les 2 sont liés)
-    
+      - db:/var/lib/mysql # dossier_local:dossier_container (les 2 sont liés)
+
     env_file:
       - ./.env
 
@@ -18,11 +16,13 @@ services:
     restart:  always
 
   wordpress:
+    depends_on:
+      - mariadb
     build:
       context: ./requirements/wordpress
 
     volumes:
-      - ./data/wordpress:/var/www/
+      - wp:/var/www/html
 
     env_file:
       - ./.env
@@ -33,6 +33,8 @@ services:
     restart:  always
 
   nginx:
+    depends_on:
+      - wordpress
     build:
       context: ./requirements/nginx
 
@@ -47,3 +49,17 @@ networks: # à revoir fortement
   default:
     driver: bridge
 
+volumes:
+  db:
+    driver: local
+    driver_opts:
+      type: 'none'
+      o:    'bind'
+      device: '/home/pierrot-inception/data/mariadb' # remplacer pierrot-inception par psaulnie quand nouvelle VM
+  wp:
+    driver: local
+    driver_opts:
+      type: 'none'
+      o:    'bind'
+      device: '/home/pierrot-inception/data/wordpress' # remplacer pierrot-inception par psaulnie quand nouvelle VM
+  

@@ -1,4 +1,4 @@
-version: '3.3'
+version: '3'
 
 services:
 
@@ -11,8 +11,8 @@ services:
     env_file:
       - ./.env
 
-    ports:
-      - "3306"
+    networks:
+      - docker_network
     restart:  always
 
   wordpress:
@@ -27,9 +27,9 @@ services:
     env_file:
       - ./.env
 
-    ports:
-      - "9000"
-      - "3306"
+    networks:
+      - docker_network
+
     restart:  always
 
   nginx:
@@ -42,11 +42,18 @@ services:
       - ./.env
 
     ports:
-      - "80:443"
+      - "443:443"
+
+    networks:
+      - docker_network
+    
+    volumes:
+      - wp:/var/www/html
+
     restart:  always
     
-networks: # à revoir fortement
-  default:
+networks:
+  docker_network:
     driver: bridge
 
 volumes:

@@ -1,10 +1,18 @@
 FROM debian:buster
 
-EXPOSE 443
-RUN apt-get update -y && apt-get install nginx -y
-# RUN ssl_protocols TLSv1.2 TLSv1.3 && systemctl reload nginx.service
-RUN mkdir /run/nginx
+RUN apt-get update -y && apt-get install -y nginx openssl
 
-COPY ["./conf/start.sh", "./start.sh"]
-RUN chmod +x start.sh
-CMD ["./start.sh"]
+RUN mkdir /etc/nginx/ssl
+RUN openssl req -newkey rsa:4096 -x509 -sha256 -days 365 \
+	-nodes -out /etc/nginx/ssl/psaulnie.crt \
+	-keyout /etc/nginx/ssl/psaulnie.key \
+	-subj "/C=FR/ST=Paris/L=Paris/O=42 School/OU=psaulnie/CN=psaulnie.42.fr"
+
+
+COPY ./conf/nginx.conf /etc/nginx/conf.d/nginx.conf
+
+RUN mkdir -p /run/nginx
+
+EXPOSE 443
+
+CMD ["nginx", "-g", "daemon off;"]

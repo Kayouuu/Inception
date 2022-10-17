@@ -1,21 +1,44 @@
-version: '3'
+version: '3.3'
+
+volumes:
+  db:
+    driver: local
+    driver_opts:
+      type: 'none'
+      o:    'bind'
+      device: '/home/pierrot-inception/data/mariadb' # remplacer pierrot-inception par psaulnie quand nouvelle VM
+  wp:
+    driver: local
+    driver_opts:
+      type: 'none'
+      o:    'bind'
+      device: '/home/pierrot-inception/data/wordpress' # remplacer pierrot-inception par psaulnie quand nouvelle VM
 
 services:
 
   mariadb:
+    environment:
+      - DB_NAME=${DB_NAME}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+
     build: ./requirements/mariadb
 
     volumes:
       - db:/var/lib/mysql # dossier_local:dossier_container (les 2 sont liés)
-
-    env_file:
-      - ./.env
 
     networks:
       - docker_network
     restart:  always
 
   wordpress:
+    environment:
+      - DB_NAME=${DB_NAME}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+
     depends_on:
       - mariadb
     build:
@@ -56,17 +79,4 @@ networks:
   docker_network:
     driver: bridge
 
-volumes:
-  db:
-    driver: local
-    driver_opts:
-      type: 'none'
-      o:    'bind'
-      device: '/home/pierrot-inception/data/mariadb' # remplacer pierrot-inception par psaulnie quand nouvelle VM
-  wp:
-    driver: local
-    driver_opts:
-      type: 'none'
-      o:    'bind'
-      device: '/home/pierrot-inception/data/wordpress' # remplacer pierrot-inception par psaulnie quand nouvelle VM
   

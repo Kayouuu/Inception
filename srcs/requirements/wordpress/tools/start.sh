@@ -1,15 +1,16 @@
 #!/bin/sh
+# CURRENTLY UNUSED
 
 if [ -f ./wordpress/wp-config.php ]
 then
 	echo "Already installed";
 else
-	cd /var/www/html/wordpress
-	sed -i "s/username_here/$MYSQL_USER/g" wp-config-sample.php
-	sed -i "s/password_here/$MYSQL_PASSWORD/g" wp-config-sample.php
-	sed -i "s/localhost/$MYSQL_HOSTNAME/g" wp-config-sample.php
-	sed -i "s/database_name_here/$MYSQL_DATABASE/g" wp-config-sample.php
-	mv wp-config-sample.php wp-config.php
+	cd /var/www/html/
+	sed -i "s/votre_utilisateur_de_bdd/$MYSQL_USER/g" wp-config-sample.php
+	sed -i "s/votre_mdp_de_bdd/$MYSQL_PASSWORD/g" wp-config-sample.php
+	sed -i "s/localhost/mariadb/g" wp-config-sample.php
+	sed -i "s/votre_nom_de_bdd/$DB_NAME/g" wp-config-sample.php
+	cp wp-config-sample.php wp-config.php
 fi
 
-exec "$@"
+exec /usr/sbin/php-fpm7.3 -F

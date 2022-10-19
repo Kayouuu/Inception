@@ -16,7 +16,12 @@ RUN mv /var/www/wordpress/ /var/www/html
 # Need to understand www.conf (Solve socker error)
 COPY ./conf/www.conf /etc/php/7.3/fpm/pool.d/
 RUN	chown -R www-data:www-data /var/www/html/wp-content/
-COPY ./conf/wp-config.php /var/www/html/
+
+COPY ./conf/wp-config.php ./wp-config.php
 RUN rm -f /var/www/wordpress/wp-config-sample.php
 
-CMD ["/usr/sbin/php-fpm7.3", "-F"]
+COPY ./tools/start.sh ./start.sh
+RUN chmod +x ./start.sh
+
+ENTRYPOINT [ "./start.sh"]
+# CMD ["/usr/sbin/php-fpm7.3", "-F"]

@@ -6,13 +6,13 @@ volumes:
     driver_opts:
       type: 'none'
       o:    'bind'
-      device: '/home/pierrot-inception/data/mariadb' # remplacer pierrot-inception par psaulnie quand nouvelle VM
+      device: '/home/psaulnie/data/mariadb' # remplacer pierrot-inception par psaulnie quand nouvelle VM
   wp:
     driver: local
     driver_opts:
       type: 'none'
       o:    'bind'
-      device: '/home/pierrot-inception/data/wordpress' # remplacer pierrot-inception par psaulnie quand nouvelle VM
+      device: '/home/psaulnie/data/wordpress' # remplacer pierrot-inception par psaulnie quand nouvelle VM
 
 services:
 

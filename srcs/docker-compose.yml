@@ -6,53 +6,43 @@ volumes:
     driver_opts:
       type: 'none'
       o:    'bind'
-      device: '/home/psaulnie/data/mariadb' # remplacer pierrot-inception par psaulnie quand nouvelle VM
+      device: '/home/psaulnie/data/mariadb'
   wp:
     driver: local
     driver_opts:
       type: 'none'
       o:    'bind'
-      device: '/home/psaulnie/data/wordpress' # remplacer pierrot-inception par psaulnie quand nouvelle VM
+      device: '/home/psaulnie/data/wordpress'
 
 services:
 
   mariadb:
     environment:
-      - DB_NAME=${DB_NAME}
-      - MYSQL_USER=${MYSQL_USER}
-      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
-      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
-
+      - DB_NAME=wordpress
+      - MYSQL_USER=psaulnie
+      - MYSQL_PASSWORD=inception
+      - MYSQL_ROOT_PASSWORD=inception
     build: ./requirements/mariadb
-
     volumes:
-      - db:/var/lib/mysql # dossier_local:dossier_container (les 2 sont liés)
-
+      - db:/var/lib/mysql
     networks:
       - docker_network
     restart:  always
 
   wordpress:
     environment:
-      - DB_NAME=${DB_NAME}
-      - MYSQL_USER=${MYSQL_USER}
-      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
-      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
-
+      - DB_NAME=wordpress
+      - MYSQL_USER=psaulnie
+      - MYSQL_PASSWORD=inception
+      - MYSQL_ROOT_PASSWORD=inception
     depends_on:
       - mariadb
     build:
       context: ./requirements/wordpress
-
     volumes:
       - wp:/var/www/html
-
-    env_file:
-      - ./.env
-
     networks:
       - docker_network
-
     restart:  always
 
   nginx:
@@ -60,19 +50,12 @@ services:
       - wordpress
     build:
       context: ./requirements/nginx
-
-    env_file:
-      - ./.env
-
     ports:
       - "443:443"
-
     networks:
       - docker_network
-    
     volumes:
       - wp:/var/www/html
-
     restart:  always
     
 networks:

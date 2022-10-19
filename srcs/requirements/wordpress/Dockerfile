@@ -13,7 +13,6 @@ RUN cd /var/www/ && wget http://fr.wordpress.org/latest-fr_FR.tar.gz && \
 	tar -xzvf latest-fr_FR.tar.gz && rm latest-fr_FR.tar.gz
 RUN mv /var/www/wordpress/ /var/www/html
 
-# Need to understand www.conf (Solve socker error)
 COPY ./conf/www.conf /etc/php/7.3/fpm/pool.d/
 RUN	chown -R www-data:www-data /var/www/html/wp-content/
 
@@ -24,4 +23,3 @@ COPY ./tools/start.sh ./start.sh
 RUN chmod +x ./start.sh
 
 ENTRYPOINT [ "./start.sh"]
-# CMD ["/usr/sbin/php-fpm7.3", "-F"]

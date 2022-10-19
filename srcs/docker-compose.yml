@@ -15,7 +15,6 @@ volumes:
       device: '/home/psaulnie/data/wordpress'
 
 services:
-
   mariadb:
     environment:
       - DB_NAME=wordpress

@@ -22,12 +22,10 @@ folders:
 	sudo mkdir -p /home/${LOGIN}/data/wordpress
 
 clean:
-	docker-compose -f ${DOCKER_COMPOSE_PATH} down
-	docker volume rm `docker volume ls -q`
-
-fclean: clean
-	docker system prune -af
-	sudo rm -rf /home/${LOGIN}/data/
+	-docker stop `docker ps -qa` 2> /dev/null
+	-docker rm `docker ps -qa` 2> /dev/null
+	-docker rmi -f `docker images -qa` 2> /dev/null
+	-docker volume rm `docker volume ls -q` 2> /dev/null
+	-docker network rm `docker network ls -q` 2> /dev/null
 
 re: clean all
-

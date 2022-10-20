@@ -16,12 +16,14 @@ volumes:
 
 services:
   mariadb:
-    environment:
-      - DB_NAME=wordpress
-      - MYSQL_USER=psaulnie
-      - MYSQL_PASSWORD=inception
-      - MYSQL_ROOT_PASSWORD=inception
-    build: ./requirements/mariadb
+    container_name: mariadb
+    build: 
+      context: ./requirements/mariadb
+      args:
+          DB_NAME: wordpress
+          MYSQL_USER: psaulnie
+          MYSQL_PASSWORD: inception
+          MYSQL_ROOT_PASSWORD: inception
     volumes:
       - db:/var/lib/mysql
     networks:
@@ -29,15 +31,16 @@ services:
     restart:  always
 
   wordpress:
-    environment:
-      - DB_NAME=wordpress
-      - MYSQL_USER=psaulnie
-      - MYSQL_PASSWORD=inception
-      - MYSQL_ROOT_PASSWORD=inception
+    container_name: wordpress
     depends_on:
       - mariadb
-    build:
+    build: 
       context: ./requirements/wordpress
+      args:
+          DB_NAME: wordpress
+          MYSQL_USER: psaulnie
+          MYSQL_PASSWORD: inception
+          MYSQL_ROOT_PASSWORD: inception
     volumes:
       - wp:/var/www/html
     networks:
@@ -45,6 +48,7 @@ services:
     restart:  always
 
   nginx:
+    container_name: nginx
     depends_on:
       - wordpress
     build:

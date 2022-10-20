@@ -11,5 +11,3 @@ else
 	sed -i "s/votre_nom_de_bdd/$DB_NAME/g" wp-config.php
 	mv wp-config.php /var/www/html/wp-config.php
 fi
-
-exec /usr/sbin/php-fpm7.3 -F

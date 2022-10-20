@@ -2,6 +2,11 @@ FROM debian:buster
 
 EXPOSE 3306
 
+ARG DB_NAME
+ARG MYSQL_USER
+ARG MYSQL_PASSWORD
+ARG MYSQL_ROOT_PASSWORD
+
 RUN apt-get update -y && apt-get install -y mariadb-server
 
 RUN mkdir -p /var/run/mysqld \
@@ -9,7 +14,11 @@ RUN mkdir -p /var/run/mysqld \
 
 COPY ./conf/50-server.cnf /etc/mysql/mariadb.conf.d/
 
-COPY ./tools/start.sh ./start.sh
-RUN	 chmod +x start.sh
+RUN	echo "CREATE DATABASE IF NOT EXISTS ${DB_NAME}; \
+	CREATE USER ${MYSQL_USER}@'%' IDENTIFIED BY '${MYSQL_PASSWORD}'; \
+	GRANT ALL ON ${DB_NAME}.* TO psaulnie@'%'; \
+	FLUSH PRIVILEGES; \
+	ALTER USER 'root'@'localhost' IDENTIFIED BY '${MYSQL_ROOT_PASSWORD}';" > db.sql
+RUN	service mysql start && mysql < db.sql
 
-ENTRYPOINT [ "./start.sh"]
+CMD ["/usr/bin/mysqld_safe"]
